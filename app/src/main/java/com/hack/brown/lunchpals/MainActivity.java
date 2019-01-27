@@ -11,10 +11,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.google.firebase.auth.FirebaseAuth;
+import android.widget.Toast;
+import com.google.firebase.auth.*;
+import com.google.firebase.firestore.*;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         MessagesFragment.OnFragmentInteractionListener, ScheduleFragment.OnFragmentInteractionListener,
@@ -22,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
 
     private DrawerLayout mDrawerLayout;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mDatabase;
 
 
     @Override
@@ -31,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -165,5 +175,28 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void findLunchPal(View view) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", currentUser.getEmail());
+        data.put("id", currentUser.getUid());
+
+        mDatabase.collection("Live Queue")
+                .add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("yup", "DocumentSnapshot written with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("yup", "Error adding document", e);
+                    }
+                });
     }
 }
