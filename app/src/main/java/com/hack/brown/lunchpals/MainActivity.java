@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         data.put("email", currentUser.getEmail());
         data.put("id", currentUser.getUid());
 
-        mDatabase.collection("Live Queue")
+        mDatabase.collection("LiveQueue")
                 .add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override

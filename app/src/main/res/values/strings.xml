@@ -35,4 +35,8 @@
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="menu_signout">Sign Out</string>
+    <string name="error_creating_room">Error creating room!</string>
+    <string name="hint_message_text">Type a message&#8230;</string>
+    <string name="error_empty_message">Please enter a message</string>
+    <string name="error_message_failed">Failed to send your message</string>
 </resources>
