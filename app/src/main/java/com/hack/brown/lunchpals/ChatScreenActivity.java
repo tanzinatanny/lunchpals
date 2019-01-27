@@ -31,7 +31,7 @@ public class ChatScreenActivity extends AppCompatActivity {
     private ChatRoomRepository chatRoomRepository;
 
     private EditText message;
-    private Button send;
+    private ImageButton send;
 
     private String roomId;
 
@@ -54,9 +54,9 @@ public class ChatScreenActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        message = findViewById(R.id.edittext_chatbox);
-        send = findViewById(R.id.button_chatbox_send);
-        chats = findViewById(R.id.reyclerview_message_list);
+        message = findViewById(R.id.message_text);
+        send = findViewById(R.id.send_message);
+        chats = findViewById(R.id.chats);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setReverseLayout(true);
         chats.setLayoutManager(manager);

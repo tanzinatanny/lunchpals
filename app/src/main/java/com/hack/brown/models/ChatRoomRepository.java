@@ -24,6 +24,13 @@ public class ChatRoomRepository {
         currentUser = mAuth.getCurrentUser();
     }
 
+    public void getRooms(String userId, EventListener<QuerySnapshot> listener) {
+        db.collection("users")
+                .document(userId)
+                .collection("rooms")
+                .addSnapshotListener(listener);
+    }
+
     public void createRoom(String participant1,
                            String participant2,
                            final OnSuccessListener<DocumentReference> successCallback,
@@ -45,10 +52,11 @@ public class ChatRoomRepository {
                         db.collection("users")
                                 .document(currentUser.getUid())
                                 .collection("rooms")
-                                .add(roomRef)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                .document(documentReference.getId())
+                                .set(roomRef)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
-                                    public void onSuccess(DocumentReference documentReference) {
+                                    public void onSuccess(Void v) {
                                         //nothing
                                     }
                                 })

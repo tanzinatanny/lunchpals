@@ -37,7 +37,6 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
                     parent,
                     false);
         }
-        Log.d("yup", "view");
         return new ChatViewHolder(view);
     }
 
