@@ -2,9 +2,11 @@ package com.hack.brown.lunchpals;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.content.Intent;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 public class MainActivityFragment extends Fragment {
 
     public MainActivityFragment() {
+
     }
 
     @Override
@@ -19,4 +22,7 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
+
+
+
 }
