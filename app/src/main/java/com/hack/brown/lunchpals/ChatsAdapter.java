@@ -1,6 +1,7 @@
 package com.hack.brown.lunchpals;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatViewHold
                     parent,
                     false);
         }
+        Log.d("yup", "view");
         return new ChatViewHolder(view);
     }
 
