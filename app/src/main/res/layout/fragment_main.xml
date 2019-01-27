@@ -8,14 +8,6 @@
         tools:showIn="@layout/activity_main"
         tools:context=".MainActivityFragment">
 
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start|top"
-            android:src="@drawable/ic_nav_menu"
-            android:layout_margin="16dp"
-            app:useCompatPadding="true"/>
     <Button
             android:text="Time for Lunch!"
             android:layout_width="wrap_content"
