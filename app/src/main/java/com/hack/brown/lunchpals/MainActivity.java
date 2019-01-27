@@ -1,5 +1,6 @@
 package com.hack.brown.lunchpals;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,12 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         MessagesFragment.OnFragmentInteractionListener, ScheduleFragment.OnFragmentInteractionListener,
             SettingsFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -87,7 +92,12 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                 fragmentClass = SettingsFragment.class;
 
                 break;
+            case R.id.nav_signout:
 
+                mAuth.signOut();
+                Intent signOutIntent = new Intent(this, LoginActivity.class);
+                startActivity(signOutIntent);
+                return;
             default:
 
                 fragmentClass = MainActivityFragment.class;
