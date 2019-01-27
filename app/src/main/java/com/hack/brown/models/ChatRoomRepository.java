@@ -3,8 +3,9 @@ package com.hack.brown.models;
 import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,9 +14,21 @@ public class ChatRoomRepository {
     private static final String TAG = "ChatRoomRepo";
 
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
 
     public ChatRoomRepository(FirebaseFirestore db) {
         this.db = db;
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+    }
+
+    public void getRooms(String userId, EventListener<QuerySnapshot> listener) {
+        db.collection("users")
+                .document(userId)
+                .collection("rooms")
+                .addSnapshotListener(listener);
     }
 
     public void createRoom(String participant1,
@@ -32,6 +45,27 @@ public class ChatRoomRepository {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         successCallback.onSuccess(documentReference);
+
+                        Map<String, Object> roomRef = new HashMap<>();
+                        roomRef.put("room", documentReference);
+
+                        db.collection("users")
+                                .document(currentUser.getUid())
+                                .collection("rooms")
+                                .document(documentReference.getId())
+                                .set(roomRef)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void v) {
+                                        //nothing
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        //nothing
+                                    }
+                                });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -53,7 +87,7 @@ public class ChatRoomRepository {
         chat.put("message", message);
         chat.put("sent", System.currentTimeMillis());
 
-        db.collection("chatroom")
+        db.collection("chatrooms")
                 .document(roomId)
                 .collection("messages")
                 .add(chat)
@@ -69,5 +103,13 @@ public class ChatRoomRepository {
                         failureCallback.onFailure(e);
                     }
                 });
+    }
+
+    public void getChats(String roomId, EventListener<QuerySnapshot> listener) {
+        db.collection("chatrooms")
+                .document(roomId)
+                .collection("messages")
+                .orderBy("sent", Query.Direction.DESCENDING)
+                .addSnapshotListener(listener);
     }
 }

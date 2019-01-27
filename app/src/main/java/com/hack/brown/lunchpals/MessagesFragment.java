@@ -1,12 +1,24 @@
 package com.hack.brown.lunchpals;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.*;
+import com.hack.brown.models.ChatRoom;
+import com.hack.brown.models.ChatRoomRepository;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,6 +40,10 @@ public class MessagesFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    ChatRoomRepository chatRoomRepository;
+    private RecyclerView chatRooms;
+    private ChatRoomsAdapter adapter;
 
     public MessagesFragment() {
         // Required empty public constructor
@@ -58,7 +74,54 @@ public class MessagesFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        chatRoomRepository = new ChatRoomRepository(FirebaseFirestore.getInstance());
+//        initUI();
+//        getChatRooms();
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        chatRooms = getView().findViewById(R.id.rooms);
+        chatRooms.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        getChatRooms();
+    }
+
+    private void initUI() {
+        //chatRooms.setLayoutManager(new LinearLayoutManager(this.getContext()));
+    }
+
+    ChatRoomsAdapter.OnChatRoomClickListener listener = new ChatRoomsAdapter.OnChatRoomClickListener() {
+        @Override
+        public void onClick(ChatRoom chatRoom) {
+            Intent intent = new Intent(getActivity(), ChatScreenActivity.class);
+            intent.putExtra("id", chatRoom.getId());
+            startActivity(intent);
+        }
+    };
+
+    private void getChatRooms() {
+        chatRoomRepository.getRooms(FirebaseAuth.getInstance().getCurrentUser().getUid(), new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.e("MainActivity", "Listen failed.", e);
+                    return;
+                }
+
+                List<ChatRoom> rooms = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : snapshots) {
+                    rooms.add(new ChatRoom(doc.getId(), doc.getString("name")));
+                }
+
+                Log.e("PLATYPUS", rooms.size() + "");
+
+                adapter = new ChatRoomsAdapter(rooms, listener);
+                chatRooms.setAdapter(adapter);
+            }
+        });
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,7 +30,10 @@ public class MatchScreenActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         finish();
+                        Log.d("PLATYPUS", "yoooooo");
+
                         Intent intent = new Intent(MatchScreenActivity.this, ChatScreenActivity.class);
+                        intent.putExtra("id", documentReference.getId());
                         startActivity(intent);
                     }
                 },

@@ -67,6 +67,25 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
                     }
                 });
 
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", mAuth.getCurrentUser().getEmail());
+
+        mDatabase.collection("users")
+                .document(mAuth.getCurrentUser().getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("MainActivity", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("MainActivity", "Error writing document", e);
+                    }
+                });
+
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
